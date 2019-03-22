@@ -2,12 +2,11 @@ import cv2
 import time
 import numpy as np
 
-
 MODE = "COCO"
 
 if MODE is "COCO":
-    protoFile = "../pose/pose_deploy_linevec.prototxt"
-    weightsFile = "../pose/pose_iter_440000.caffemodel"
+    protoFile = "../pose/coco/pose_deploy_linevec.prototxt"
+    weightsFile = "../pose/coco/pose_iter_440000.caffemodel"
     nPoints = 18
     POSE_PAIRS = [[1, 0], [1, 2], [1, 5], [2, 3], [3, 4], [5, 6], [6, 7], [1, 8], [8, 9], [9, 10], [1, 11], [11, 12],
                   [12, 13], [0, 14], [0, 15], [14, 16], [15, 17]]
@@ -22,13 +21,17 @@ elif MODE is "MPI":
 
 
 
+file_name = "2"
+ext = ".jpg"
 
-
-frame = cv2.imread("../img/single.jpeg")
+frame = cv2.imread("../img/"+file_name+ext)
 frameCopy = np.copy(frame)
 frameWidth = frame.shape[1]
 frameHeight = frame.shape[0]
 threshold = 0.1
+
+print("input image width {}".format(frameWidth))
+print("input image height {}".format(frameHeight))
 
 net = cv2.dnn.readNetFromCaffe(protoFile, weightsFile)
 
@@ -89,6 +92,8 @@ for pair in POSE_PAIRS:
 cv2.imshow('Output-Keypoints', frameCopy)
 cv2.imshow('Output-Skeleton', frame)
 
+cv2.imwrite('../results/Output-Keypoints_for_'+file_name+'.jpg', frameCopy)
+cv2.imwrite('../results/Output-Skeleton_for_'+file_name+'.jpg', frame)
 
 cv2.waitKey(0)
 
